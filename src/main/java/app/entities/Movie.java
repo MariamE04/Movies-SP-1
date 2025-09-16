@@ -38,8 +38,6 @@ public class Movie {
     @OneToMany(mappedBy = "movie")
     Set<MovieGenre> movieGenres = new HashSet<>();
 
-
-
     @ManyToOne
     private Director director;
 }

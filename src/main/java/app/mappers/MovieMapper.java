@@ -1,10 +1,9 @@
 package app.mappers;
 
+import app.dtos.ActorDTO;
 import app.dtos.GenreDTO;
 import app.dtos.MovieDTO;
-import app.entities.Genre;
-import app.entities.Movie;
-import app.entities.MovieGenre;
+import app.entities.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +21,9 @@ public class MovieMapper {
         movie.setTitle(dto.getTitle());
         movie.setVote_average(dto.getVote_average());
         movie.setVote_count(dto.getVote_count());
+
+        movie.setDirector(DirectorMapper.toEntity(dto.getDirectorDTO()));
+
 
         // Opretter et tomt Set til at holde relationerne mellem film og genre
         Set<MovieGenre> movieGenres = new HashSet<>();
