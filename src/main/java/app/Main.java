@@ -1,7 +1,9 @@
 package app;
 
 import app.config.HibernateConfig;
+import app.dtos.DirectorDTO;
 import app.dtos.MovieDTO;
+import app.services.DirectorService;
 import app.services.MovieService;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -15,7 +17,7 @@ public class Main {
         System.out.println("test");
 
 
-        MovieService movieService = new MovieService();
+        /*MovieService movieService = new MovieService();
 
         // Hent listen af film
         List<MovieDTO> movies = movieService.getMovieInfo();
@@ -28,7 +30,18 @@ public class Main {
             System.out.println("Popularity: " + movie.getPopularity());
             System.out.println("Rating: " + movie.getVote_average());
             System.out.println("-----------------------------------");
+        }*/
+
+        DirectorService directorService = new DirectorService();
+
+        // Hent directors for en film
+        List<DirectorDTO> directors = directorService.getDirectorsByMovieId(1426672);
+
+        for (DirectorDTO d : directors) {
+            System.out.println("Director: " + d.getName() + " (TMDb ID: " + d.getId() + ")");
         }
+
+
 
     }
 }
