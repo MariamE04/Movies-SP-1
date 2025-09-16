@@ -2,8 +2,10 @@ package app;
 
 import app.config.HibernateConfig;
 import app.dtos.DirectorDTO;
+import app.dtos.GenreDTO;
 import app.dtos.MovieDTO;
 import app.services.DirectorService;
+import app.services.GenreService;
 import app.services.MovieService;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -38,9 +40,15 @@ public class Main {
         List<DirectorDTO> directors = directorService.getDirectorsByMovieId(1426672);
 
         for (DirectorDTO d : directors) {
-            System.out.println("Director: " + d.getName() + " (TMDb ID: " + d.getId() + ")");
+            //System.out.println("Director: " + d.getName() + " (TMDb ID: " + d.getId() + ")");
         }
 
+        GenreService genreService = new GenreService();
+
+        List<GenreDTO> genres = genreService.getGenreInfo(1426672);
+        for(GenreDTO d : genres){
+            System.out.println("Genre: " + d.getName() + " (TMDb ID: " + d.getId() + ")");
+        }
 
 
     }

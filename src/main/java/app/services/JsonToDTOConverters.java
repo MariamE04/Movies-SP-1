@@ -68,11 +68,14 @@ public class JsonToDTOConverters {
         }
     }
 
-    public GenreDTO toGenreDTO(String json){
+    public List<GenreDTO> toGenreDTO(String json) {
         try {
-            return objectMapper.readValue(json, GenreDTO.class);
-        } catch (JsonProcessingException e) {
-            throw new ApiException(500, e.getMessage());
+            JsonNode root = objectMapper.readTree(json);
+            JsonNode resultsNode = root.get("genres"); // tag kun "results"
+            return objectMapper.readValue(resultsNode.toString(), new TypeReference<List<GenreDTO>>() {
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
