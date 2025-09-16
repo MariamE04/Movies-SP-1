@@ -1,0 +1,55 @@
+@startuml
+
+class Movie {
+  id: int
+  tmdbId: int
+  title: String
+  releaseDate: LocalDate
+  voteAverage: double
+  popularity: double
+  overview: String
+  directorId: FK -> Director
+}
+
+class Actor {
+  id: int
+  tmdbId: int
+  ActorName: String
+}
+
+class Director {
+  id: int
+  tmdbId: int
+  directorName: String
+}
+
+class Genre {
+  id: int
+  tmdbId: int
+  GenreName: String
+}
+
+' Mellemtabeller (ejer)
+class MovieCast {
+  id: int
+  characterName: String
+  movieId: FK -> Movie
+  actorId: FK -> Actor
+}
+
+class MovieGenre {
+  id: int
+  movieId: FK -> Movie
+  genreId: FK -> Genre
+}
+
+' Relationer
+Movie "1" --> "*" MovieCast
+Actor "1" --> "*" MovieCast
+
+Movie "1" --> "*" MovieGenre
+Genre "1" --> "*" MovieGenre
+
+Director "1" --> "*" Movie : directs
+
+@enduml
