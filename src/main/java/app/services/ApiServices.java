@@ -7,7 +7,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class ApiFetch {
+public class ApiServices {
 
     public String fetchFromApi(String Uri){
         // sende HTTP-forespørgsler (GET, POST osv.) til en server.
