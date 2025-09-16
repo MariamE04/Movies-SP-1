@@ -13,7 +13,6 @@ public class MovieDTO {
 
     private int id;
     private String original_language;
-    private List<Integer> genre_ids;
     private String original_title;
     private String overview;
     private double popularity;
@@ -21,7 +20,9 @@ public class MovieDTO {
     private String title;
     private double vote_average;
     private double vote_count;
+
     private ActorDTO actorDTO;
     private DirectorDTO directorDTO;
+    private List<GenreDTO> genreDTO;
 
 }
