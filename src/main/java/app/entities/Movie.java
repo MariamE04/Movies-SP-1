@@ -1,6 +1,8 @@
 package app.entities;
 
 import app.dtos.DirectorDTO;
+import app.dtos.GenreDTO;
+import app.mappers.GenreMapper;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,7 +36,9 @@ public class Movie {
     private Set<MovieCast> moviesCasts = new HashSet<>();
 
     @OneToMany(mappedBy = "movie")
-    private Set<MovieGenre> movieGenres = new HashSet<>();
+    Set<MovieGenre> movieGenres = new HashSet<>();
+
+
 
     @ManyToOne
     private Director director;
