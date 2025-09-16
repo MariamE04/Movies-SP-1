@@ -1,11 +1,7 @@
 package app.services;
 
 import app.dtos.MovieDTO;
-
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
 public class MovieService {
 
@@ -19,6 +15,4 @@ public class MovieService {
         String json = apiServices.fetchFromApi(uri);
         return jsonToDTOConverters.toMovieDTOs(json);
     }
-
-
 }

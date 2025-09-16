@@ -10,7 +10,7 @@ public class GenreService {
 
     public List<GenreDTO> getGenreInfo(int movieId){
         String apiKey = System.getenv("API_KEY");
-        String uri = "https://api.themoviedb.org/3/genre/movie/list?api_key=" + apiKey + "&language=da";
+        String uri = "https://api.themoviedb.org/3/movie/" + movieId + "?api_key=" + apiKey + "&language=da";
         String json = apiServices.fetchFromApi(uri);
 
         return jsonToDTOConverters.toGenreDTO(json);
