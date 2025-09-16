@@ -26,6 +26,7 @@ public class Main {
             System.out.println("Udgivelsesdato: " + movie.getRelease_date());
             System.out.println("Sprog: " + movie.getOriginal_language());
             System.out.println("Popularity: " + movie.getPopularity());
+            System.out.println("Rating: " + movie.getVote_average());
             System.out.println("-----------------------------------");
         }
 
