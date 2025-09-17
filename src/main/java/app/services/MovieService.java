@@ -1,6 +1,11 @@
 package app.services;
 
+import app.dtos.DirectorDTO;
 import app.dtos.MovieDTO;
+import app.entities.Director;
+import app.entities.Movie;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieService {
@@ -15,4 +20,16 @@ public class MovieService {
         String json = apiServices.fetchFromApi(uri);
         return jsonToDTOConverters.toMovieDTOs(json);
     }
+
+    public void MoviesWithDirectors(List<MovieDTO> movies){
+        DirectorService directorService = new DirectorService();
+
+        for(MovieDTO movie: movies){
+            List<DirectorDTO> directors = directorService.getDirectorsByMovieId(movie.getId());
+            if(!directors.isEmpty()){
+                movie.setDirectorDTO(directors.get(0));
+            }
+        }
+    }
+
 }

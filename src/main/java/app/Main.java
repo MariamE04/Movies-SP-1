@@ -1,55 +1,60 @@
 package app;
 
-import app.config.HibernateConfig;
 import app.dtos.DirectorDTO;
 import app.dtos.GenreDTO;
 import app.dtos.MovieDTO;
 import app.services.DirectorService;
 import app.services.GenreService;
 import app.services.MovieService;
-import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
-        System.out.println("test");
+        System.out.println("=== Filmtest ===");
 
+        MovieService movieService = new MovieService();
 
-        /*MovieService movieService = new MovieService();
-
-        // Hent listen af film
+        // Hent filmene
         List<MovieDTO> movies = movieService.getMovieInfo();
 
-        // Loop gennem og print hver film
-        for (MovieDTO movie : movies) {
-            System.out.println("Titel: " + movie.getTitle());
-            System.out.println("Udgivelsesdato: " + movie.getRelease_date());
-            System.out.println("Sprog: " + movie.getOriginal_language());
-            System.out.println("Popularity: " + movie.getPopularity());
-            System.out.println("Rating: " + movie.getVote_average());
-            System.out.println("-----------------------------------");
-        }*/
+        // Knyt directors til filmene
+        movieService.MoviesWithDirectors(movies);
 
-        DirectorService directorService = new DirectorService();
-
-        // Hent directors for en film
-        List<DirectorDTO> directors = directorService.getDirectorsByMovieId(1426672);
-
-        for (DirectorDTO d : directors) {
-            //System.out.println("Director: " + d.getName() + " (TMDb ID: " + d.getId() + ")");
-        }
-
+        // GenreService til at hente genrer
         GenreService genreService = new GenreService();
 
-        List<GenreDTO> genres = genreService.getGenreInfo(1426672);
-        for(GenreDTO d : genres){
-            System.out.println("Genre: " + d.getName() + " (TMDb ID: " + d.getId() + ")");
+        // Print info om hver film
+        for (MovieDTO movie : movies) {
+            System.out.println("Titel: " + movie.getTitle());
+            System.out.println("Original titel: " + movie.getOriginal_title());
+            System.out.println("Sprog: " + movie.getOriginal_language());
+            System.out.println("Udgivelsesdato: " + movie.getRelease_date());
+            System.out.println("Beskrivelse: " + movie.getOverview());
+            System.out.println("Popularity: " + movie.getPopularity());
+            System.out.println("Rating: " + movie.getVote_average());
+            System.out.println("Stemmer: " + movie.getVote_count());
+
+            // Instruktør
+            if (movie.getDirectorDTO() != null) {
+                System.out.println("Instruktør: " + movie.getDirectorDTO().getName());
+            } else {
+                System.out.println("Instruktør: Ikke fundet");
+            }
+
+            // Genrer
+            List<GenreDTO> genres = genreService.getGenreInfo(movie.getId());
+            if (genres != null && !genres.isEmpty()) {
+                System.out.print("Genrer: ");
+                for (GenreDTO g : genres) {
+                    System.out.print(g.getName() + " ");
+                }
+                System.out.println();
+            } else {
+                System.out.println("Genrer: Ikke fundet");
+            }
+
+            System.out.println("-----------------------------------");
         }
-
-
     }
 }

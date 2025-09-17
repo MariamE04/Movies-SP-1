@@ -22,6 +22,8 @@ public class Genre {
     private String name;
 
     @OneToMany(mappedBy = "genre")
+    @Builder.Default
+    @ToString.Exclude
     private Set<MovieGenre> genre = new HashSet<>();
 
 }

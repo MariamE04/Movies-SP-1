@@ -57,10 +57,11 @@ public class JsonToDTOConverters {
                     DirectorDTO dto = new DirectorDTO();
                     dto.setId((crewMember.get("id").asInt()));
                     dto.setName(crewMember.get("name").asText());
+                    dto.setKnown_for_department(crewMember.get("known_for_department").asText());
+                    dto.setJob(crewMember.get("job").asText());
                     directors.add(dto);
                 }
             }
-
             return directors;
 
         } catch (JsonProcessingException e) {

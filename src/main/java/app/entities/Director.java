@@ -14,17 +14,28 @@ import java.util.Set;
 @ToString
 
 @Entity
+@Table(
+        name = "director",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "directorId")
+        }
+)
+
 public class Director {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name ="director_Id", nullable = false)
     private int directorId;
     private String department;
     private String name;
     private String job;
 
     @OneToMany(mappedBy = "director")
-    private Set<Movie> director = new HashSet<>();
+    @Builder.Default
+    @ToString.Exclude
+    private Set<Movie> movies  = new HashSet<>();
 
 
 }

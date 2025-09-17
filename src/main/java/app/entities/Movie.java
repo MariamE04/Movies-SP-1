@@ -33,9 +33,13 @@ public class Movie {
     private double vote_count;
 
     @OneToMany(mappedBy = "movie")
+    @Builder.Default
+    @ToString.Exclude
     private Set<MovieCast> moviesCasts = new HashSet<>();
 
     @OneToMany(mappedBy = "movie")
+    @Builder.Default
+    @ToString.Exclude
     Set<MovieGenre> movieGenres = new HashSet<>();
 
     @ManyToOne

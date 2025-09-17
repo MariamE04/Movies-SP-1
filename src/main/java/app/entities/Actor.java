@@ -24,5 +24,7 @@ public class Actor {
     private int castId;
 
     @OneToMany(mappedBy = "actor")
+    @Builder.Default
+    @ToString.Exclude
     private Set<MovieCast> actors = new HashSet<>();
 }
