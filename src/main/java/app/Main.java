@@ -28,5 +28,6 @@ public class Main {
         // 2️ Tilføj directors og gem dem i DB
         movieService.MoviesWithDirectors(movies);
 
+        //push
     }
 }
