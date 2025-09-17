@@ -19,6 +19,7 @@
 
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
+      <remarks>sp1</remarks>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:5432/postgres</jdbc-url>
       <jdbc-additional-properties>
