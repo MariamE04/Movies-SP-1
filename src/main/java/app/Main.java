@@ -46,7 +46,7 @@ public class Main {
 
             System.out.println("-----------------------------------"); */
 
-       DirectorService directorService = new DirectorService();
+       //DirectorService directorService = new DirectorService();
 
         /*Optional<DirectorDTO> directorOpt = directorService.getDirectorByName("Mette Carla Albrechtsen");
 
