@@ -2,13 +2,17 @@ package app.services;
 
 import app.config.HibernateConfig;
 import app.daos.DirectorDAO;
+import app.daos.GenreDAO;
 import app.daos.MovieDAO;
 import app.dtos.DirectorDTO;
 import app.dtos.GenreDTO;
 import app.dtos.MovieDTO;
 import app.entities.Director;
+import app.entities.Genre;
 import app.entities.Movie;
+import app.entities.MovieGenre;
 import app.mappers.DirectorMapper;
+import app.mappers.GenreMapper;
 import app.mappers.MovieMapper;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -59,6 +63,7 @@ public class MovieService {
         GenreService genreService = new GenreService();
         DirectorDAO directorDAO = new DirectorDAO(emf); //  Håndtere directors i databasen (gem/pesister)
         MovieDAO movieDAO = new MovieDAO(emf); //Håndtere movies i databasen (gem/pesister)
+        GenreDAO genreDAO = new GenreDAO(emf);
 
         // Opret tråd-pool med 10 tråde → parallelt arbejde
         ExecutorService executor = Executors.newFixedThreadPool(10);
@@ -92,6 +97,27 @@ public class MovieService {
 
                 // Persisterer filmen med director til databasen. (gem)
                 movieDAO.creat(movieEntity);
+
+                // --- Gem genre ---
+                for (GenreDTO genreDTO : genres) {
+                    try {
+                        Genre genreEntity = genreDAO.getById(genreDTO.getId()); // prøv at finde
+                        // Tilføj forbindelse
+                        MovieGenre mg = new MovieGenre();
+                        mg.setMovie(movieEntity);
+                        mg.setGenre(genreEntity);
+                        movieEntity.getMovieGenres().add(mg);
+                    } catch (Exception e) {
+                        // hvis ikke findes, gem ny
+                        Genre genreEntity = GenreMapper.toEntity(genreDTO);
+                        genreDAO.creat(genreEntity);
+
+                        MovieGenre mg = new MovieGenre();
+                        mg.setMovie(movieEntity);
+                        mg.setGenre(genreEntity);
+                        movieEntity.getMovieGenres().add(mg);
+                    }
+                }
 
             }
             }); // Slut på executor-opgaven for én film.

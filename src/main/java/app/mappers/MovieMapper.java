@@ -40,6 +40,18 @@ public class MovieMapper {
 
         movie.setMovieGenres(movieGenres);
 
+        //TODO: Har ikke testet det men MovieCast  forbinder actor og movie sammen her
+        Set<MovieCast> movieCasts = new HashSet<>();
+
+        if (dto.getActorDTO() != null) {
+            Actor actor = ActorMapper.toEntity(dto.getActorDTO());
+            MovieCast mc = new MovieCast();
+            mc.setActor(actor);
+            mc.setMovie(movie);
+            movieCasts.add(mc);
+            movie.setMoviesCasts(movieCasts);
+        }
+
         return movie;
 
     }

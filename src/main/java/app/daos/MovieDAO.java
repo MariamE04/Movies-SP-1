@@ -27,24 +27,49 @@ public class MovieDAO implements IDAO <Movie, Integer> {
     }
 
     @Override
-    public Movie getById(Integer integer) {
-        return null;
+    public Movie getById(Integer id) {
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            Movie movie = em.find(Movie.class, id);
+            em.getTransaction().commit();
+            return movie;
+        }
     }
 
     @Override
     public Movie update(Movie movie) {
-        return null;
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            em.merge(movie);
+            em.getTransaction().commit();
+        }
+        return movie;
+
     }
 
     @Override
     public List<Movie> getAll() {
-        return List.of();
+        try(EntityManager em = emf.createEntityManager()){
+
+            return em.createQuery("SELECT m FROM Movie m", Movie.class)
+                    .getResultList();
+        }
     }
 
     @Override
-    public boolean delete(Integer integer) {
-        return false;
+    public boolean delete(Integer id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            Movie movie = em.find(Movie.class, id);
+            if (movie != null) {
+                em.getTransaction().begin();
+                em.remove(movie);
+                em.getTransaction().commit();
+                return true;
+            } else {
+                System.out.println("Problemer med at fjerne movie fra databasen");
+                em.getTransaction().rollback();
+                return false;
+            }
+        }
     }
-
-
 }
