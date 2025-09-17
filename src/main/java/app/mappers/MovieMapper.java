@@ -37,7 +37,7 @@ public class MovieMapper {
         }
 
         // Opretter et tomt Set til at holde relationerne mellem film og genre
-       /* Set<MovieGenre> movieGenres = new HashSet<>();
+      /*  Set<MovieGenre> movieGenres = new HashSet<>();
 
         // Løkke over alle genreDTO’er, som kommer fra MovieDTO
         for (GenreDTO genreDTO : dto.getGenreDTO()) {
@@ -56,9 +56,8 @@ public class MovieMapper {
 
             // Tilføjer den færdige relation til sættet
             movieGenres.add(mg);
-        }
-        // Når alle genre er mappet, sætter vi hele mængden af MovieGenre ind på Movie
-        movie.setMovieGenres(movieGenres); */
+        }*/
+
 
 
         //midlertidig løsning gem film i db uden genre
@@ -73,6 +72,9 @@ public class MovieMapper {
                 movieGenres.add(mg);
             }
         }
+
+        // Når alle genre er mappet, sætter vi hele mængden af MovieGenre ind på Movie
+        movie.setMovieGenres(movieGenres);
 
         return movie;
 

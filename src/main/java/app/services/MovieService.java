@@ -4,6 +4,7 @@ import app.config.HibernateConfig;
 import app.daos.DirectorDAO;
 import app.daos.MovieDAO;
 import app.dtos.DirectorDTO;
+import app.dtos.GenreDTO;
 import app.dtos.MovieDTO;
 import app.entities.Director;
 import app.entities.Movie;
@@ -37,6 +38,7 @@ public class MovieService {
         do { //vi kører mindst én gang, uanset hvad.
             String json = apiServices.fetchFromApi(uri + "&page=" + currentPage); //henter JSON fra API’et for den aktuelle side (URL’en bygges dynamisk: ...&page=1)
 
+
             // Konverterer JSON-svaret fra den side til en liste af MovieDTO-objekter.
             List<MovieDTO> moviesPage = jsonToDTOConverters.toMovieDTOs(json);
             allMovies.addAll(moviesPage); // Tilføjer filmene fra denne side til den samlede liste
@@ -50,16 +52,19 @@ public class MovieService {
         } while (currentPage <= totalPages); //Løkken fortsætter indtil vi har hentet alle sider (fra 1 til totalPages).
 
         return allMovies; // returner hele listen, ikke kun første side
+
+
     }
 
     public void MoviesWithDirectors(List<MovieDTO> movies) throws InterruptedException {
        // Her oprettes service/DAO objekter, som vi skal bruge til at:
         DirectorService directorService = new DirectorService(); // Hente director-data fra API
+        GenreService genreService = new GenreService();
         DirectorDAO directorDAO = new DirectorDAO(emf); //  Håndtere directors i databasen (gem/pesister)
         MovieDAO movieDAO = new MovieDAO(emf); //Håndtere movies i databasen (gem/pesister)
 
         // Opret tråd-pool med 10 tråde → parallelt arbejde
-        ExecutorService executor = Executors.newFixedThreadPool(10);
+        ExecutorService executor = Executors.newFixedThreadPool(20);
 
         //For hver film i listen: sender vi en opgave til executor (en ledig tråd) -> hente director + gemme filmen i DB.
         for(MovieDTO movieDTO: movies){
@@ -80,6 +85,9 @@ public class MovieService {
                     directorEntity = DirectorMapper.toEntity(directorDTO);
                     directorDAO.creat(directorEntity);
                 }
+
+                List<GenreDTO> genres = genreService.getGenreInfo(movieDTO.getId());
+                movieDTO.setGenreDTO(genres);
 
                 // Konverterer MovieDTO til Movie entity, som kan gemmes i DB.
                 Movie movieEntity = MovieMapper.toEntity(movieDTO);
