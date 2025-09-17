@@ -33,6 +33,8 @@ public class DirectorDAO implements IDAO<Director, Integer> {
                     .setParameter("id", directorId)
                     .getSingleResult();
 
+
+
             return found;
         }
     }

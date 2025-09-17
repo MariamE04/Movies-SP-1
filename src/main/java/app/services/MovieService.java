@@ -7,12 +7,14 @@ import app.dtos.MovieDTO;
 import app.entities.Director;
 import app.entities.Movie;
 import app.mappers.DirectorMapper;
+import jakarta.persistence.EntityManagerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MovieService {
 
+    EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
 
     private ApiServices apiServices = new ApiServices();
     private JsonToDTOConverters jsonToDTOConverters = new JsonToDTOConverters();
@@ -26,10 +28,10 @@ public class MovieService {
 
     public void MoviesWithDirectors(List<MovieDTO> movies){
         DirectorService directorService = new DirectorService();
-        DirectorDAO directorDAO = new DirectorDAO(HibernateConfig.getEntityManagerFactory());
+        DirectorDAO directorDAO = new DirectorDAO(emf);
 
         for(MovieDTO movie: movies){
-            // Hent director fra TMDb
+            // Henter director fra TMDb
             List<DirectorDTO> directors = directorService.getDirectorsByMovieId(movie.getId());
             if(!directors.isEmpty()){
                 DirectorDTO directorDTO = directors.get(0);

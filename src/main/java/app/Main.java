@@ -18,9 +18,6 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("=== Filmtest ===");
 
-        //EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
-
-
         MovieService movieService = new MovieService();
 
         // 1 Hent listen af danske film
