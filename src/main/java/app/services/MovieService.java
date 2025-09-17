@@ -1,9 +1,12 @@
 package app.services;
 
+import app.config.HibernateConfig;
+import app.daos.DirectorDAO;
 import app.dtos.DirectorDTO;
 import app.dtos.MovieDTO;
 import app.entities.Director;
 import app.entities.Movie;
+import app.mappers.DirectorMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +26,26 @@ public class MovieService {
 
     public void MoviesWithDirectors(List<MovieDTO> movies){
         DirectorService directorService = new DirectorService();
+        DirectorDAO directorDAO = new DirectorDAO(HibernateConfig.getEntityManagerFactory());
 
         for(MovieDTO movie: movies){
+            // Hent director fra TMDb
             List<DirectorDTO> directors = directorService.getDirectorsByMovieId(movie.getId());
             if(!directors.isEmpty()){
-                movie.setDirectorDTO(directors.get(0));
+                DirectorDTO directorDTO = directors.get(0);
+                movie.setDirectorDTO(directorDTO);
+
+                // Gem director i DB, hvis den ikke allerede findes
+                try {
+                    Director existing = directorDAO.getById(directorDTO.getId()); // TMDb ID
+                } catch (Exception e) {
+                    // Director findes ikke → gem
+                    Director newDirector = DirectorMapper.toEntity(directorDTO);
+                    directorDAO.creat(newDirector);
+                }
             }
         }
     }
+
 
 }

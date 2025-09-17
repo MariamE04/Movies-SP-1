@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class MovieMapper {
 
-    public Movie toEntity(MovieDTO dto){
+    public static Movie toEntity(MovieDTO dto){
         Movie movie = new Movie();
         movie.setMovieId(dto.getId());
         movie.setOriginal_language(dto.getOriginal_language());
