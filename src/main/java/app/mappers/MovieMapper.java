@@ -25,7 +25,7 @@ public class MovieMapper {
         movie.setDirector(DirectorMapper.toEntity(dto.getDirectorDTO()));
 
 
-        // Opretter et tomt Set til at holde relationerne mellem film og genre
+       /* // Opretter et tomt Set til at holde relationerne mellem film og genre
         Set<MovieGenre> movieGenres = new HashSet<>();
 
         // Løkke over alle genreDTO’er, som kommer fra MovieDTO
@@ -48,8 +48,22 @@ public class MovieMapper {
         }
 
         // Når alle genre er mappet, sætter vi hele mængden af MovieGenre ind på Movie
-        movie.setMovieGenres(movieGenres);
+        movie.setMovieGenres(movieGenres); */
 
+        //midlertidig løsning gem film i db uden genre
+        Set<MovieGenre> movieGenres = new HashSet<>();
+
+        if (dto.getGenreDTO() != null) {   // <-- tjek om genreDTO er null
+            for (GenreDTO genreDTO : dto.getGenreDTO()) {
+                Genre genre = GenreMapper.toEntity(genreDTO);
+                MovieGenre mg = new MovieGenre();
+                mg.setMovie(movie);
+                mg.setGenre(genre);
+                movieGenres.add(mg);
+            }
+        }
+
+        movie.setMovieGenres(movieGenres);
 
         return movie;
 

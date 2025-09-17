@@ -24,10 +24,16 @@ public class Movie {
     private int id;
     private int movieId;
     private String original_language;
+
+    @Column(columnDefinition = "TEXT")
     private String original_title;
+
+    @Column(columnDefinition = "TEXT")
     private String overview;
     private double popularity;
     private LocalDate release_date;
+
+    @Column(columnDefinition = "TEXT")
     private String title;
     private double vote_average;
     private double vote_count;

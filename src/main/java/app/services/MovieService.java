@@ -2,14 +2,15 @@ package app.services;
 
 import app.config.HibernateConfig;
 import app.daos.DirectorDAO;
+import app.daos.MovieDAO;
 import app.dtos.DirectorDTO;
 import app.dtos.MovieDTO;
 import app.entities.Director;
 import app.entities.Movie;
 import app.mappers.DirectorMapper;
+import app.mappers.MovieMapper;
 import jakarta.persistence.EntityManagerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MovieService {
@@ -29,22 +30,33 @@ public class MovieService {
     public void MoviesWithDirectors(List<MovieDTO> movies){
         DirectorService directorService = new DirectorService();
         DirectorDAO directorDAO = new DirectorDAO(emf);
+        MovieDAO movieDAO = new MovieDAO(emf);
 
-        for(MovieDTO movie: movies){
+        for(MovieDTO movieDTO: movies){
             // Henter director fra TMDb
-            List<DirectorDTO> directors = directorService.getDirectorsByMovieId(movie.getId());
+            List<DirectorDTO> directors = directorService.getDirectorsByMovieId(movieDTO.getId());
             if(!directors.isEmpty()){
                 DirectorDTO directorDTO = directors.get(0);
-                movie.setDirectorDTO(directorDTO);
+                movieDTO.setDirectorDTO(directorDTO);
 
                 // Gem director i DB, hvis den ikke allerede findes
+                Director directorEntity;
+
                 try {
-                    Director existing = directorDAO.getById(directorDTO.getId()); // TMDb ID
+                    directorEntity = directorDAO.getById(directorDTO.getId());
                 } catch (Exception e) {
                     // Director findes ikke → gem
-                    Director newDirector = DirectorMapper.toEntity(directorDTO);
-                    directorDAO.creat(newDirector);
+                    directorEntity = DirectorMapper.toEntity(directorDTO);
+                    directorDAO.creat(directorEntity);
                 }
+
+                // Lav Movie-entity fra DTO og sæt director
+                Movie movieEntity = MovieMapper.toEntity(movieDTO);
+                movieEntity.setDirector(directorEntity);
+
+                // Gem filmen i DB
+                movieDAO.creat(movieEntity);
+
             }
         }
     }
