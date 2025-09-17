@@ -25,8 +25,20 @@ public class MovieMapper {
         movie.setDirector(DirectorMapper.toEntity(dto.getDirectorDTO()));
 
 
-       /* // Opretter et tomt Set til at holde relationerne mellem film og genre
-        Set<MovieGenre> movieGenres = new HashSet<>();
+        //TODO: Har ikke testet det men MovieCast  forbinder actor og movie sammen her
+        Set<MovieCast> movieCasts = new HashSet<>();
+
+        if (dto.getActorDTO() != null) {
+            Actor actor = ActorMapper.toEntity(dto.getActorDTO());
+            MovieCast mc = new MovieCast();
+            mc.setActor(actor);
+            mc.setMovie(movie);
+            movieCasts.add(mc);
+            movie.setMoviesCasts(movieCasts);
+        }
+
+        // Opretter et tomt Set til at holde relationerne mellem film og genre
+       /* Set<MovieGenre> movieGenres = new HashSet<>();
 
         // Løkke over alle genreDTO’er, som kommer fra MovieDTO
         for (GenreDTO genreDTO : dto.getGenreDTO()) {
@@ -46,9 +58,9 @@ public class MovieMapper {
             // Tilføjer den færdige relation til sættet
             movieGenres.add(mg);
         }
-
         // Når alle genre er mappet, sætter vi hele mængden af MovieGenre ind på Movie
         movie.setMovieGenres(movieGenres); */
+
 
         //midlertidig løsning gem film i db uden genre
         Set<MovieGenre> movieGenres = new HashSet<>();
@@ -62,8 +74,6 @@ public class MovieMapper {
                 movieGenres.add(mg);
             }
         }
-
-        movie.setMovieGenres(movieGenres);
 
         return movie;
 

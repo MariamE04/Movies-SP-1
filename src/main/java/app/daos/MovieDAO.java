@@ -81,4 +81,15 @@ public class MovieDAO implements IDAO <Movie, Integer> {
         }
 
     }
+
+    public List<Movie> findByGenreName(String name){
+        try(EntityManager em = emf.createEntityManager()){
+            return em.createQuery("SELECT m FROM Movie m " +
+                    "JOIN MovieGenre mg ON m = mg.movie " +
+                     "JOIN Genre g ON g = mg.genre " +
+                    " WHERE g.name = :name", Movie.class)
+                    .setParameter("name", name)
+                    .getResultList();
+        }
+    }
 }

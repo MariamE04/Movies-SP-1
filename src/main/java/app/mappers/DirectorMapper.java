@@ -14,4 +14,13 @@ public class DirectorMapper {
         return director;
     }
 
+    public static DirectorDTO toDTO(Director director) {
+        DirectorDTO dto = new DirectorDTO();
+        dto.setId(director.getDirectorId());
+        dto.setName(director.getName());
+        dto.setJob(director.getJob());
+        dto.setKnown_for_department(director.getDepartment());
+        return dto;
+    }
+
 }
