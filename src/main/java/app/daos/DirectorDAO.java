@@ -3,8 +3,10 @@ package app.daos;
 import app.entities.Director;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.NoResultException;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DirectorDAO implements IDAO<Director, Integer> {
 
@@ -41,15 +43,12 @@ public class DirectorDAO implements IDAO<Director, Integer> {
 
     @Override
     public Director update(Director director) {
-        try(EntityManager em = emf.createEntityManager()){
+        try(EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-
-            em.persist(director);
-
+            Director updatedDirector = em.merge(director); // merge i stedet for persist
             em.getTransaction().commit();
-
+            return updatedDirector;
         }
-        return director;
     }
 
     @Override
@@ -80,4 +79,32 @@ public class DirectorDAO implements IDAO<Director, Integer> {
 
         }
     }
+
+    public Optional<Director> findByName(String name) {
+        try (EntityManager em = emf.createEntityManager()) {
+            List<Director> results = em.createQuery(
+                            "SELECT d FROM Director d WHERE d.name = :name", Director.class)
+                    .setParameter("name", name)
+                    .getResultList();
+
+            if (results.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.of(results.get(0));
+            }
+
+        }
+    }
+
+    public Director getByDirectorId(int directorId) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT d FROM Director d WHERE d.directorId = :did", Director.class)
+                    .setParameter("did", directorId)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+
 }

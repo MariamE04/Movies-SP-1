@@ -51,7 +51,8 @@ public class JsonToDTOConverters {
             for(JsonNode crewMember : crewArray){ // hvert crewMember er et JsonNode der repræsenterer et objekt i crew-arrayet
 
                 // 5) Tjekker om denne crew-medlems 'job' er "Director"
-                if("Director".equals(crewMember.get("job").asText())){
+                if("Director".equals(crewMember.get("job").asText()) &&
+                        "Directing".equals(crewMember.get("known_for_department").asText())){
 
                     // 6) Hvis ja — laves der en ny DTO, udfylder felter fra JSON og tilføjer til listen
                     DirectorDTO dto = new DirectorDTO();
@@ -79,5 +80,14 @@ public class JsonToDTOConverters {
             throw new RuntimeException(e);
         }
     }
-
+    public int extractTotalPages(String json) { // Returnerer antal sider fra JSON
+        try {
+            ObjectMapper mapper = new ObjectMapper(); // Gør det muligt at læse JSON (ellers kunne java ikke forstå det)
+            JsonNode root = mapper.readTree(json);    // Læser JSON-strengen til et JSON-træ (med JSON-træ kan man navigere direkte til det felt, man vil have uden at skulle “splitte strengen manuelt”.
+            return root.get("total_pages").asInt();   // Finder "total_pages" og konverterer til tal
+        } catch (Exception e) {
+            e.printStackTrace(); // Printer fejl, hvis JSON ikke kan læses
+            return 1;
+        }
+    }
 }

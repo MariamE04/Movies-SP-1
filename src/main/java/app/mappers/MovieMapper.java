@@ -46,7 +46,6 @@ public class MovieMapper {
             // Tilføjer den færdige relation til sættet
             movieGenres.add(mg);
         }
-
         // Når alle genre er mappet, sætter vi hele mængden af MovieGenre ind på Movie
         movie.setMovieGenres(movieGenres); */
 
