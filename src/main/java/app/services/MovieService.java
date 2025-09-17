@@ -13,6 +13,9 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class MovieService {
 
@@ -49,12 +52,15 @@ public class MovieService {
         return allMovies; // returner hele listen, ikke kun første side
     }
 
-    public void MoviesWithDirectors(List<MovieDTO> movies){
+    public void MoviesWithDirectors(List<MovieDTO> movies) throws InterruptedException {
         DirectorService directorService = new DirectorService();
         DirectorDAO directorDAO = new DirectorDAO(emf);
         MovieDAO movieDAO = new MovieDAO(emf);
 
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+
         for(MovieDTO movieDTO: movies){
+            executor.submit(()->{
             // Henter director fra TMDb
             List<DirectorDTO> directors = directorService.getDirectorsByMovieId(movieDTO.getId());
             if(!directors.isEmpty()){
@@ -80,8 +86,11 @@ public class MovieService {
                 movieDAO.creat(movieEntity);
 
             }
+            });
         }
+
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.MINUTES);
+
     }
-
-
 }

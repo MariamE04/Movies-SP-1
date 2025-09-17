@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DirectorDAO implements IDAO<Director, Integer> {
 
@@ -76,6 +77,22 @@ public class DirectorDAO implements IDAO<Director, Integer> {
             } else {
                 em.getTransaction().rollback();
                 return false;
+            }
+
+        }
+    }
+
+    public Optional<Director> findByName(String name) {
+        try (EntityManager em = emf.createEntityManager()) {
+            List<Director> results = em.createQuery(
+                            "SELECT d FROM Director d WHERE d.name = :name", Director.class)
+                    .setParameter("name", name)
+                    .getResultList();
+
+            if (results.isEmpty()) {
+                return Optional.empty();
+            } else {
+                return Optional.of(results.get(0));
             }
 
         }

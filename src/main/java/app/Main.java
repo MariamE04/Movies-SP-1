@@ -13,9 +13,10 @@ import app.services.MovieService;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         System.out.println("=== Filmtest ===");
 
         MovieService movieService = new MovieService();
@@ -27,7 +28,7 @@ public class Main {
         movieService.MoviesWithDirectors(movies);
 
         // 3 Print film + director
-        for (MovieDTO movie : movies) {
+       /* for (MovieDTO movie : movies) {
             System.out.println("Titel: " + movie.getTitle());
             System.out.println("Original titel: " + movie.getOriginal_title());
             System.out.println("Sprog: " + movie.getOriginal_language());
@@ -42,7 +43,17 @@ public class Main {
                 System.out.println("Director: Ikke fundet");
             }
 
-            System.out.println("-----------------------------------");
+            System.out.println("-----------------------------------"); */
+
+        DirectorService directorService = new DirectorService();
+
+        Optional<DirectorDTO> directorOpt = directorService.getDirectorByName("Mette Carla Albrechtsen");
+
+        if (directorOpt.isPresent()) {
+            System.out.println("Found by name: " + directorOpt.get());
+        } else {
+            System.out.println("Director not found");
+        }
         }
 
 
@@ -90,5 +101,5 @@ public class Main {
 
             System.out.println("-----------------------------------");
         }*/
-    }
+
 }
