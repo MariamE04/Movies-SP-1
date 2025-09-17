@@ -21,7 +21,6 @@ public class MovieMapper {
         movie.setTitle(dto.getTitle());
         movie.setVote_average(dto.getVote_average());
         movie.setVote_count(dto.getVote_count());
-
         movie.setDirector(DirectorMapper.toEntity(dto.getDirectorDTO()));
 
 
