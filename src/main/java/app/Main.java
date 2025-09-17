@@ -22,11 +22,14 @@ public class Main {
 
         MovieService movieService = new MovieService();
 
+
         // 1 Hent listen af danske film
         List<MovieDTO> movies = movieService.getMovieInfo();
 
         // 2️ Tilføj directors og gem dem i DB
-        movieService.MoviesWithDirectors(movies);
+        //movieService.MoviesWithDirectors(movies);
+
+        movieService.MoviesWithActors(movies);
 
         //push
     }

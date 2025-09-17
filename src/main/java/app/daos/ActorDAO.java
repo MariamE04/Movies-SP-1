@@ -5,6 +5,7 @@ import app.entities.Actor;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 
@@ -75,5 +76,17 @@ public class ActorDAO implements IDAO <Actor, Integer>{
             }
         }
 
+    }
+
+    public Actor getByActorId(int actorId){
+        try(EntityManager em = emf.createEntityManager()) {
+
+
+            return em.createQuery("SELECT a FROM Actor a LEFT JOIN FETCH a.movieCasts WHERE a.actorId = :actorId", Actor.class)
+                    .setParameter("actorId", actorId)
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+        }
     }
 }

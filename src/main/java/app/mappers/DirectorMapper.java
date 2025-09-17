@@ -6,6 +6,9 @@ import app.entities.Director;
 public class DirectorMapper {
 
     public static  Director toEntity(DirectorDTO dto){
+        if(dto == null){
+return null;
+        }
         Director director = new Director();
         director.setDirectorId(dto.getId());
         director.setDepartment(dto.getKnown_for_department());

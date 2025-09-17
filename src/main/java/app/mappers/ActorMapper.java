@@ -25,7 +25,7 @@ public class ActorMapper {
             movieCast.setCharacterName(a);
             actors.add(movieCast);
         }
-        actor.setActors(actors);
+        actor.setMovieCasts(actors);
 
 
 

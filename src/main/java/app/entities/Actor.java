@@ -23,8 +23,8 @@ public class Actor {
     private String name;
     private int castId;
 
-    @OneToMany(mappedBy = "actor")
+    @OneToMany(mappedBy = "actor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Builder.Default
     @ToString.Exclude
-    private Set<MovieCast> actors = new HashSet<>();
+    private Set<MovieCast> movieCasts = new HashSet<>();
 }

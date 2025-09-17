@@ -27,6 +27,11 @@ public class DirectorService {
         return jsonToDTOConverters.toDirectorDTO(json);
     }
 
+
+
+
+
+
     public Optional<DirectorDTO> getDirectorByName(String name){
         return directorDAO.findByName(name).map(DirectorMapper::toDTO);
 
