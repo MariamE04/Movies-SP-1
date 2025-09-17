@@ -4,6 +4,7 @@ import app.config.HibernateConfig;
 import app.daos.DirectorDAO;
 import app.daos.MovieDAO;
 import app.dtos.DirectorDTO;
+import app.dtos.GenreDTO;
 import app.dtos.MovieDTO;
 import app.entities.Director;
 import app.entities.Movie;
@@ -55,6 +56,7 @@ public class MovieService {
     public void MoviesWithDirectors(List<MovieDTO> movies) throws InterruptedException {
        // Her oprettes service/DAO objekter, som vi skal bruge til at:
         DirectorService directorService = new DirectorService(); // Hente director-data fra API
+        GenreService genreService = new GenreService();
         DirectorDAO directorDAO = new DirectorDAO(emf); //  Håndtere directors i databasen (gem/pesister)
         MovieDAO movieDAO = new MovieDAO(emf); //Håndtere movies i databasen (gem/pesister)
 
@@ -69,6 +71,9 @@ public class MovieService {
             if(!directors.isEmpty()){ // Hvis ikke tom → tag første director
                 DirectorDTO directorDTO = directors.get(0);
                 movieDTO.setDirectorDTO(directorDTO); // Gem directorDTO i movieDTO (sener brug)
+
+                List<GenreDTO> genres = genreService.getGenreInfo(movieDTO.getId());
+                movieDTO.setGenreDTO(genres);
 
                 // Gem director i DB, hvis den ikke allerede findes
                 Director directorEntity;
