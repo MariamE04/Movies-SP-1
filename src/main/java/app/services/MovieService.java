@@ -53,19 +53,22 @@ public class MovieService {
     }
 
     public void MoviesWithDirectors(List<MovieDTO> movies) throws InterruptedException {
-        DirectorService directorService = new DirectorService();
-        DirectorDAO directorDAO = new DirectorDAO(emf);
-        MovieDAO movieDAO = new MovieDAO(emf);
+       // Her oprettes service/DAO objekter, som vi skal bruge til at:
+        DirectorService directorService = new DirectorService(); // Hente director-data fra API
+        DirectorDAO directorDAO = new DirectorDAO(emf); //  Håndtere directors i databasen (gem/pesister)
+        MovieDAO movieDAO = new MovieDAO(emf); //Håndtere movies i databasen (gem/pesister)
 
+        // Opret tråd-pool med 10 tråde → parallelt arbejde
         ExecutorService executor = Executors.newFixedThreadPool(10);
 
+        //For hver film i listen: sender vi en opgave til executor (en ledig tråd) -> hente director + gemme filmen i DB.
         for(MovieDTO movieDTO: movies){
             executor.submit(()->{
-            // Henter director fra TMDb
+            // Hent directors fra API (gemmes i list)
             List<DirectorDTO> directors = directorService.getDirectorsByMovieId(movieDTO.getId());
-            if(!directors.isEmpty()){
+            if(!directors.isEmpty()){ // Hvis ikke tom → tag første director
                 DirectorDTO directorDTO = directors.get(0);
-                movieDTO.setDirectorDTO(directorDTO);
+                movieDTO.setDirectorDTO(directorDTO); // Gem directorDTO i movieDTO (sener brug)
 
                 // Gem director i DB, hvis den ikke allerede findes
                 Director directorEntity;
@@ -73,24 +76,25 @@ public class MovieService {
                 try {
                     directorEntity = directorDAO.getById(directorDTO.getId());
                 } catch (Exception e) {
-                    // Director findes ikke → gem
+                    // // Tjek om director findes i DB, ellers gem
                     directorEntity = DirectorMapper.toEntity(directorDTO);
                     directorDAO.creat(directorEntity);
                 }
 
-                // Lav Movie-entity fra DTO og sæt director
+                // Konverterer MovieDTO til Movie entity, som kan gemmes i DB.
                 Movie movieEntity = MovieMapper.toEntity(movieDTO);
                 movieEntity.setDirector(directorEntity);
 
-                // Gem filmen i DB
+                // Persisterer filmen med director til databasen. (gem)
                 movieDAO.creat(movieEntity);
 
             }
-            });
+            }); // Slut på executor-opgaven for én film.
         }
 
-        executor.shutdown();
-        executor.awaitTermination(10, TimeUnit.MINUTES);
+        // sikrer, at alle film er hentet og gemt, før metoden afslutter.
+        executor.shutdown(); // vi sender ikke flere opgaver til executor.
+        executor.awaitTermination(10, TimeUnit.MINUTES); // venter op til 10 minutter, indtil alle tråde er færdige.
 
     }
 }
