@@ -40,9 +40,14 @@ public class DirectorService {
         directorDAO.update(director);
     }
 
+    //virker ikke i nu (ventes med)
     public Director getById(int id){
-        Director found = directorDAO.getByDirectorId(id);
+        Director found = directorDAO.getByDirectorDBId(id);
         return  found;
+    }
+
+    public void delete(int id){
+        directorDAO.delete(id);
     }
 
 }
