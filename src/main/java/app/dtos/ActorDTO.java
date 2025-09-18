@@ -12,11 +12,11 @@ import java.util.List;
 public class ActorDTO {
 
     @JsonProperty ("id")
-    private int actor_id;
+    private Integer  actor_id;
     private String known_for_department;
     private String name;
     private List<String> character;
-    private int cast_id;
+    private Integer  cast_id;
 
 
 }

@@ -38,7 +38,7 @@ public class Movie {
     private double vote_average;
     private double vote_count;
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude
     private Set<MovieCast> moviesCasts = new HashSet<>();
@@ -50,4 +50,6 @@ public class Movie {
 
     @ManyToOne
     private Director director;
+
+
 }

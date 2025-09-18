@@ -7,7 +7,8 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
 
-public class ActorDAO implements IDAO<Actor,Integer>{
+public class ActorDAO implements IDAO <Actor, Integer>{
+
     EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
 
     public ActorDAO(EntityManagerFactory emf){
@@ -77,7 +78,6 @@ public class ActorDAO implements IDAO<Actor,Integer>{
 
     public Actor getByActorId(int actorId){
         try(EntityManager em = emf.createEntityManager()) {
-
 
             return em.createQuery("SELECT a FROM Actor a LEFT JOIN FETCH a.movieCasts WHERE a.actorId = :actorId", Actor.class)
                     .setParameter("actorId", actorId)

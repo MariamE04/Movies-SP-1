@@ -17,7 +17,7 @@ public class MovieCast {
     private int id;
     private String characterName;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Actor actor;
 
     @ManyToOne
