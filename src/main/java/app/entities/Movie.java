@@ -48,6 +48,6 @@ public class Movie {
     @ToString.Exclude
     Set<MovieGenre> movieGenres = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Director director;
 }

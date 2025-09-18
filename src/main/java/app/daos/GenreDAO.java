@@ -31,17 +31,6 @@ public class GenreDAO implements IDAO<Genre, Integer> {
                     .setParameter(1, genreId)
                     .getSingleResult();
         }
-
-    }
-
-
-    public Genre getByIdM(Integer genreId) {
-        try(EntityManager em = emf.createEntityManager()){
-            return em.createQuery("SELECT g FROM Genre g WHERE g.genreId =: id",Genre.class)
-                    .setParameter("id", genreId)
-                    .getSingleResult();
-        }
-
     }
 
     @Override
@@ -66,12 +55,12 @@ public class GenreDAO implements IDAO<Genre, Integer> {
     @Override
     public boolean delete(Integer genreId) {
         try(EntityManager em = emf.createEntityManager()){
-            int rowsAffected = em.createQuery("DELETE FROM Genre g where g.genreId = ?1 ")
+
+           int rowsAffected = em.createQuery("DELETE FROM Genre g where g.genreId = ?1 ")
                     .setParameter(1, genreId)
                     .executeUpdate();
-            //Hvis mere end 0 rækker er blevet ændret så return
-            return rowsAffected > 0;
+           //Hvis mere end 0 rækker er blevet ændret så return
+           return rowsAffected > 0;
         }
     }
-
 }

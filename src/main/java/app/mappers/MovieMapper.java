@@ -11,6 +11,7 @@ import java.util.Set;
 public class MovieMapper {
 
     public static Movie toEntity(MovieDTO dto){
+
         Movie movie = new Movie();
         movie.setMovieId(dto.getId());
         movie.setOriginal_language(dto.getOriginal_language());
@@ -21,7 +22,6 @@ public class MovieMapper {
         movie.setTitle(dto.getTitle());
         movie.setVote_average(dto.getVote_average());
         movie.setVote_count(dto.getVote_count());
-
         movie.setDirector(DirectorMapper.toEntity(dto.getDirectorDTO()));
 
         Set<MovieGenre> movieGenres = new HashSet<>();
@@ -49,9 +49,7 @@ public class MovieMapper {
             movieCasts.add(mc);
             movie.setMoviesCasts(movieCasts);
         }
-
         return movie;
-
     }
 
 }

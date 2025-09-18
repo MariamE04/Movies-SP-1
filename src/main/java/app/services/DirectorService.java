@@ -27,6 +27,11 @@ public class DirectorService {
         return jsonToDTOConverters.toDirectorDTO(json);
     }
 
+
+
+
+
+
     public Optional<DirectorDTO> getDirectorByName(String name){
         return directorDAO.findByName(name).map(DirectorMapper::toDTO);
 
@@ -40,9 +45,14 @@ public class DirectorService {
         directorDAO.update(director);
     }
 
+    //virker ikke i nu (ventes med)
     public Director getById(int id){
-        Director found = directorDAO.getByDirectorId(id);
+        Director found = directorDAO.getByDirectorDBId(id);
         return  found;
+    }
+
+    public void delete(int id){
+        directorDAO.delete(id);
     }
 
 }

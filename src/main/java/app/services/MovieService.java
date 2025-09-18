@@ -1,14 +1,22 @@
 package app.services;
 
 import app.config.HibernateConfig;
+import app.daos.ActorDAO;
 import app.daos.DirectorDAO;
 import app.daos.GenreDAO;
 import app.daos.MovieDAO;
-import app.daos.MovieGenreDAO;
+
+import app.dtos.ActorDTO;
 import app.dtos.DirectorDTO;
 import app.dtos.GenreDTO;
 import app.dtos.MovieDTO;
-import app.entities.*;
+
+import app.entities.Actor;
+import app.entities.Director;
+import app.entities.Movie;
+import app.entities.MovieCast;
+
+import app.mappers.ActorMapper;
 import app.mappers.DirectorMapper;
 import app.mappers.GenreMapper;
 import app.mappers.MovieMapper;
@@ -127,3 +135,50 @@ public class MovieService {
 
     }
 }
+
+
+    public void MoviesWithActors(List<MovieDTO> movies) throws InterruptedException {
+        ActorService actorService = new ActorService();
+        ActorDAO actorDAO = new ActorDAO(emf);
+        MovieDAO movieDAO = new MovieDAO(emf);
+
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+
+        for(MovieDTO movieDTO : movies){
+            executor.submit(() ->{
+                try{
+                    List<ActorDTO> actorDTOS = actorService.getActorInfo(movieDTO.getId());
+                    Movie movie = MovieMapper.toEntity(movieDTO);
+
+                    for(ActorDTO actorDTO : actorDTOS){
+                        Actor actor = actorDAO.getByActorId(actorDTO.getActor_id());
+
+                        if(actor == null){
+                            actor = ActorMapper.toEntity(actorDTO);
+                            actorDAO.creat(actor);
+                        }
+
+                        for(String characterName : actorDTO.getCharacter()){
+                            MovieCast movieCast = new MovieCast();
+
+                            movieCast.setActor(actor);
+                            movieCast.setMovie(movie);
+                            movieCast.setCharacterName(characterName);
+
+                            movie.getMoviesCasts().add(movieCast);
+                            actor.getMovieCasts().add(movieCast);
+                        }
+                    }
+                    movieDAO.creat(movie);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            });
+
+        }
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.MINUTES);
+
+    }
+}
+

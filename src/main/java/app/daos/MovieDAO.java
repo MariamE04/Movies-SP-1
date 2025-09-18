@@ -44,32 +44,52 @@ public class MovieDAO implements IDAO <Movie, Integer> {
             em.getTransaction().commit();
         }
         return movie;
-
     }
 
     @Override
     public List<Movie> getAll() {
-        try(EntityManager em = emf.createEntityManager()){
+        EntityManager em = emf.createEntityManager();
 
-            return em.createQuery("SELECT m FROM Movie m", Movie.class)
-                    .getResultList();
-        }
+        return em.createQuery("SELECT m FROM Movie m", Movie.class)
+                .getResultList();
     }
 
     @Override
     public boolean delete(Integer id) {
-        try (EntityManager em = emf.createEntityManager()) {
+        try(EntityManager em = emf.createEntityManager()){
             Movie movie = em.find(Movie.class, id);
-            if (movie != null) {
+            if(movie != null){
                 em.getTransaction().begin();
                 em.remove(movie);
                 em.getTransaction().commit();
                 return true;
-            } else {
+            }else {
                 System.out.println("Problemer med at fjerne movie fra databasen");
                 em.getTransaction().rollback();
                 return false;
             }
+        }
+    }
+
+    public List<Movie> findByTitleContainingIgnoreCase(String title){
+
+        try(EntityManager em = emf.createEntityManager()){
+            return em.createQuery("SELECT m FROM Movie m WHERE LOWER(m.title) LIKE LOWER(CONCAT('%', :title, '%'))")
+                    .setParameter("title", title)
+                    .getResultList()
+                    ;
+        }
+
+    }
+
+    public List<Movie> findByGenreName(String name){
+        try(EntityManager em = emf.createEntityManager()){
+            return em.createQuery("SELECT m FROM Movie m " +
+                    "JOIN MovieGenre mg ON m = mg.movie " +
+                     "JOIN Genre g ON g = mg.genre " +
+                    " WHERE g.name = :name", Movie.class)
+                    .setParameter("name", name)
+                    .getResultList();
         }
     }
 }
