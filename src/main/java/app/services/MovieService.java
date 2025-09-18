@@ -3,17 +3,20 @@ package app.services;
 import app.config.HibernateConfig;
 import app.daos.ActorDAO;
 import app.daos.DirectorDAO;
+import app.daos.GenreDAO;
 import app.daos.MovieDAO;
+import app.daos.MovieGenreDAO;
+
 import app.dtos.ActorDTO;
 import app.dtos.DirectorDTO;
 import app.dtos.GenreDTO;
 import app.dtos.MovieDTO;
-import app.entities.Actor;
-import app.entities.Director;
-import app.entities.Movie;
-import app.entities.MovieCast;
+
+import app.entities.*;
+
 import app.mappers.ActorMapper;
 import app.mappers.DirectorMapper;
+import app.mappers.GenreMapper;
 import app.mappers.MovieMapper;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -59,11 +62,13 @@ public class MovieService {
     }
 
     public void MoviesWithDirectors(List<MovieDTO> movies) throws InterruptedException {
-       // Her oprettes service/DAO objekter, som vi skal bruge til at:
+        // Her oprettes service/DAO objekter, som vi skal bruge til at:
         DirectorService directorService = new DirectorService(); // Hente director-data fra API
         GenreService genreService = new GenreService();
         DirectorDAO directorDAO = new DirectorDAO(emf); //  Håndtere directors i databasen (gem/pesister)
         MovieDAO movieDAO = new MovieDAO(emf); //Håndtere movies i databasen (gem/pesister)
+        GenreDAO genreDAO = new GenreDAO(emf);
+        MovieGenreDAO movieGenreDAO = new MovieGenreDAO(emf);
 
         // Opret tråd-pool med 10 tråde → parallelt arbejde
         ExecutorService executor = Executors.newFixedThreadPool(10);
@@ -71,34 +76,54 @@ public class MovieService {
         //For hver film i listen: sender vi en opgave til executor (en ledig tråd) -> hente director + gemme filmen i DB.
         for(MovieDTO movieDTO: movies){
             executor.submit(()->{
-            // Hent directors fra API (gemmes i list)
-            List<DirectorDTO> directors = directorService.getDirectorsByMovieId(movieDTO.getId());
-            if(!directors.isEmpty()){ // Hvis ikke tom → tag første director
-                DirectorDTO directorDTO = directors.get(0);
-                movieDTO.setDirectorDTO(directorDTO); // Gem directorDTO i movieDTO (sener brug)
+                // Hent directors fra API (gemmes i list)
+                List<DirectorDTO> directors = directorService.getDirectorsByMovieId(movieDTO.getId());
+                if(!directors.isEmpty()){ // Hvis ikke tom → tag første director
+                    DirectorDTO directorDTO = directors.get(0);
+                    movieDTO.setDirectorDTO(directorDTO); // Gem directorDTO i movieDTO (sener brug)
 
-                List<GenreDTO> genres = genreService.getGenreInfo(movieDTO.getId());
-                movieDTO.setGenreDTO(genres);
+                    List<GenreDTO> genres = genreService.getGenreInfo(movieDTO.getId());
+                    movieDTO.setGenreDTO(genres);
 
-                // Gem director i DB, hvis den ikke allerede findes
-                Director directorEntity;
+                    // Gem director i DB, hvis den ikke allerede findes
+                    Director directorEntity;
 
-                try {
-                    directorEntity = directorDAO.getById(directorDTO.getId());
-                } catch (Exception e) {
-                    // // Tjek om director findes i DB, ellers gem
-                    directorEntity = DirectorMapper.toEntity(directorDTO);
-                    directorDAO.creat(directorEntity);
+                    try {
+                        directorEntity = directorDAO.getById(directorDTO.getId());
+                    } catch (Exception e) {
+                        // // Tjek om director findes i DB, ellers gem
+                        directorEntity = DirectorMapper.toEntity(directorDTO);
+                        directorDAO.creat(directorEntity);
+                    }
+
+                    // Konverterer MovieDTO til Movie entity, som kan gemmes i DB.
+                    Movie movieEntity = MovieMapper.toEntity(movieDTO);
+                    movieEntity.setDirector(directorEntity);
+
+                    // Persisterer filmen med director til databasen. (gem)
+                    movieDAO.creat(movieEntity);
+
+                    // --- Gem MovieGenre ---
+                    for (GenreDTO genreDTO : genres) {
+                        Genre genreEntity;
+                        try {
+                            genreEntity = genreDAO.getById(genreDTO.getId());
+                        } catch (Exception e) {
+                            genreEntity = GenreMapper.toEntity(genreDTO);
+                            genreDAO.creat(genreEntity);
+                        }
+
+                        MovieGenre mg = new MovieGenre();
+                        mg.setMovie(movieEntity);
+                        mg.setGenre(genreEntity);
+
+                        // Persister MovieGenre direkte
+                        movieGenreDAO.create(mg);
+
+                        // Tilføj til memory-relation
+                        movieEntity.getMovieGenres().add(mg);
+                    }
                 }
-
-                // Konverterer MovieDTO til Movie entity, som kan gemmes i DB.
-                Movie movieEntity = MovieMapper.toEntity(movieDTO);
-                movieEntity.setDirector(directorEntity);
-
-                // Persisterer filmen med director til databasen. (gem)
-                movieDAO.creat(movieEntity);
-
-            }
             }); // Slut på executor-opgaven for én film.
         }
 
@@ -107,6 +132,7 @@ public class MovieService {
         executor.awaitTermination(10, TimeUnit.MINUTES); // venter op til 10 minutter, indtil alle tråde er færdige.
 
     }
+
 
     public void MoviesWithActors(List<MovieDTO> movies) throws InterruptedException {
         ActorService actorService = new ActorService();
@@ -152,3 +178,4 @@ public class MovieService {
 
     }
 }
+
