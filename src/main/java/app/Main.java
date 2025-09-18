@@ -17,6 +17,8 @@ public class Main {
         // 2️ Tilføj directors og gem dem i DB
         movieService.MoviesWithDirectors(movies);
 
+
+
         // 3 Print film + director
        /* for (MovieDTO movie : movies) {
             System.out.println("Titel: " + movie.getTitle());

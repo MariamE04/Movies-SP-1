@@ -23,6 +23,23 @@ public class MovieMapper {
         movie.setVote_count(dto.getVote_count());
 
         movie.setDirector(DirectorMapper.toEntity(dto.getDirectorDTO()));
+
+        // Tilføj actors hvis de findes
+        if (dto.getActorDTO() != null) {
+            Set<MovieCast> movieCasts = new HashSet<>();
+            Actor actor = ActorMapper.toEntity(dto.getActorDTO()); // Mapper actor
+            MovieCast mc = new MovieCast();
+            mc.setActor(actor);
+            mc.setMovie(movie); // Sæt movie på cast → så får du ikke null i movie_id
+            mc.setCharacterName(
+                    dto.getActorDTO().getCharacter().isEmpty() ? null : dto.getActorDTO().getCharacter().get(0)
+            );
+            movieCasts.add(mc);
+
+            movie.setMoviesCasts(movieCasts);
+        }
+
+
         return movie;
 
     }

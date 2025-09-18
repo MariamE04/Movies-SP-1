@@ -18,17 +18,6 @@ public class ActorMapper {
         actor.setName(actorDTO.getName());
         actor.setCastId(actorDTO.getCast_id());
 
-        Set<MovieCast> actors = new HashSet<>();
-        for(String a : actorDTO.getCharacter()){
-            MovieCast movieCast = new MovieCast();
-            movieCast.setActor(actor);
-            movieCast.setCharacterName(a);
-            actors.add(movieCast);
-        }
-        actor.setMovieCasts(actors);
-
-
-
         return actor;
     }
 }

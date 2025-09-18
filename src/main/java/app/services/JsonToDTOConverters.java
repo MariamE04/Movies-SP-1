@@ -103,6 +103,8 @@ public class JsonToDTOConverters {
             throw new RuntimeException(e);
         }
     }
+
+    // Pages
     public int extractTotalPages(String json) { // Returnerer antal sider fra JSON
         try {
             ObjectMapper mapper = new ObjectMapper(); // Gør det muligt at læse JSON (ellers kunne java ikke forstå det)
