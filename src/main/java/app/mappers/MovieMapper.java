@@ -24,52 +24,6 @@ public class MovieMapper {
         movie.setVote_count(dto.getVote_count());
         movie.setDirector(DirectorMapper.toEntity(dto.getDirectorDTO()));
 
-
-        //TODO: Har ikke testet det men MovieCast  forbinder actor og movie sammen her
-        Set<MovieCast> movieCasts = new HashSet<>();
-
-
-        if(dto.getDirectorDTO() != null){
-            Director director = DirectorMapper.toEntity(dto.getDirectorDTO());
-            movie.setDirector(director);
-        }
-
-
-        if (dto.getActorDTO() != null) {
-            Actor actor = ActorMapper.toEntity(dto.getActorDTO());
-            MovieCast mc = new MovieCast();
-            mc.setActor(actor);
-            mc.setMovie(movie);
-            movieCasts.add(mc);
-            movie.setMoviesCasts(movieCasts);
-        }
-
-        // Opretter et tomt Set til at holde relationerne mellem film og genre
-       /* Set<MovieGenre> movieGenres = new HashSet<>();
-
-        // Løkke over alle genreDTO’er, som kommer fra MovieDTO
-        for (GenreDTO genreDTO : dto.getGenreDTO()) {
-
-            // Konverterer GenreDTO til en Genre-entity (fra DTO-lag til DB-lag)
-            Genre genre = GenreMapper.toEntity(genreDTO);
-
-            // Opretter et nyt MovieGenre-objekt (join-entity mellem Movie og Genre)
-            MovieGenre mg = new MovieGenre();
-
-            // Sætter filmen på relationen (kobler Movie til MovieGenre)
-            mg.setMovie(movie);
-
-            // Sætter genren på relationen (kobler Genre til MovieGenre)
-            mg.setGenre(genre);
-
-            // Tilføjer den færdige relation til sættet
-            movieGenres.add(mg);
-        }
-        // Når alle genre er mappet, sætter vi hele mængden af MovieGenre ind på Movie
-        movie.setMovieGenres(movieGenres); */
-
-
-        //midlertidig løsning gem film i db uden genre
         Set<MovieGenre> movieGenres = new HashSet<>();
 
         if (dto.getGenreDTO() != null) {   // <-- tjek om genreDTO er null
@@ -82,8 +36,20 @@ public class MovieMapper {
             }
         }
 
-        return movie;
+        movie.setMovieGenres(movieGenres);
 
+        //TODO: Har ikke testet det men MovieCast  forbinder actor og movie sammen her
+        Set<MovieCast> movieCasts = new HashSet<>();
+
+        if (dto.getActorDTO() != null) {
+            Actor actor = ActorMapper.toEntity(dto.getActorDTO());
+            MovieCast mc = new MovieCast();
+            mc.setActor(actor);
+            mc.setMovie(movie);
+            movieCasts.add(mc);
+            movie.setMoviesCasts(movieCasts);
+        }
+        return movie;
     }
 
 }

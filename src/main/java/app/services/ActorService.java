@@ -1,13 +1,9 @@
 package app.services;
 
 import app.dtos.ActorDTO;
-import app.dtos.DirectorDTO;
-import app.entities.Actor;
-
 import java.util.List;
 
 public class ActorService {
-
     ApiServices apiServices = new ApiServices();
     JsonToDTOConverters jsonToDTOConverters = new JsonToDTOConverters();
 
