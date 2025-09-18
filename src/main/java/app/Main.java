@@ -15,6 +15,8 @@ public class Main {
         // 1 Hent listen af danske film
         List<MovieDTO> movies = movieService.getMovieInfo();
 
+        movieService.MoviesWithDirectors(movies);
+
       //  movieService.MoviesWithActors(movies);
 
 
