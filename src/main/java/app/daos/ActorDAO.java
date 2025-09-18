@@ -4,12 +4,6 @@ import app.config.HibernateConfig;
 import app.entities.Actor;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
-
-import java.util.List;
-
-public class ActorDAO implements IDAO <Actor, Integer>{
 
     EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
 
