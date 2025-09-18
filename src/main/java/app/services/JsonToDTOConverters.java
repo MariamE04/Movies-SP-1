@@ -58,6 +58,7 @@ public class JsonToDTOConverters {
         }
     }
 
+
     public List<DirectorDTO> toDirectorDTO(String json){
         try {
             // 1) Læs JSON-strengen ind i Jacksons "tree" model (JsonNode)
