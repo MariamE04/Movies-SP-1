@@ -14,12 +14,7 @@ import java.util.Set;
 @ToString
 
 @Entity
-@Table(
-        name = "director",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "directorId")
-        }
-)
+
 
 public class Director {
     @Id

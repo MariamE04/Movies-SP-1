@@ -49,5 +49,6 @@ public class Movie {
     Set<MovieGenre> movieGenres = new HashSet<>();
 
     @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "director_id",  referencedColumnName = "id") // FK til Director.id
     private Director director;
 }
