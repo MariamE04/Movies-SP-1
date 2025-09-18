@@ -5,16 +5,14 @@ import app.daos.ActorDAO;
 import app.daos.DirectorDAO;
 import app.daos.GenreDAO;
 import app.daos.MovieDAO;
+import app.daos.MovieGenreDAO;
 
 import app.dtos.ActorDTO;
 import app.dtos.DirectorDTO;
 import app.dtos.GenreDTO;
 import app.dtos.MovieDTO;
 
-import app.entities.Actor;
-import app.entities.Director;
-import app.entities.Movie;
-import app.entities.MovieCast;
+import app.entities.*;
 
 import app.mappers.ActorMapper;
 import app.mappers.DirectorMapper;
@@ -134,7 +132,6 @@ public class MovieService {
         executor.awaitTermination(10, TimeUnit.MINUTES); // venter op til 10 minutter, indtil alle tråde er færdige.
 
     }
-}
 
 
     public void MoviesWithActors(List<MovieDTO> movies) throws InterruptedException {
