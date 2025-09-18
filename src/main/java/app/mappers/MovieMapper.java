@@ -11,6 +11,7 @@ import java.util.Set;
 public class MovieMapper {
 
     public static Movie toEntity(MovieDTO dto){
+
         Movie movie = new Movie();
         movie.setMovieId(dto.getId());
         movie.setOriginal_language(dto.getOriginal_language());
@@ -26,6 +27,13 @@ public class MovieMapper {
 
         //TODO: Har ikke testet det men MovieCast  forbinder actor og movie sammen her
         Set<MovieCast> movieCasts = new HashSet<>();
+
+
+        if(dto.getDirectorDTO() != null){
+            Director director = DirectorMapper.toEntity(dto.getDirectorDTO());
+            movie.setDirector(director);
+        }
+
 
         if (dto.getActorDTO() != null) {
             Actor actor = ActorMapper.toEntity(dto.getActorDTO());
