@@ -89,4 +89,15 @@ public class ActorDAO implements IDAO <Actor, Integer>{
                     .orElse(null);
         }
     }
+
+    public Actor getByActorId2(int actorId){
+        try(EntityManager em = emf.createEntityManager()) {
+
+
+            return em.createQuery("SELECT a FROM Actor a WHERE a.actorId = :actorId", Actor.class)
+                    .setParameter("actorId", actorId)
+                    .getSingleResult();
+        }
+    }
+
 }

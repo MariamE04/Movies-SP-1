@@ -92,4 +92,39 @@ public class MovieDAO implements IDAO <Movie, Integer> {
                     .getResultList();
         }
     }
+
+    public double getAverageRating(int id){
+        try(EntityManager em = emf.createEntityManager()){
+            return em.createQuery("SELECT m.vote_average FROM Movie m WHERE m.id = ?1", Double.class)
+                    .setParameter(1, id)
+                    .getSingleResult();
+        }
+    }
+
+    public List<Movie> getTop10HighestRated(){
+        try(EntityManager em = emf.createEntityManager()){
+           return em.createQuery("SELECT m FROM Movie m ORDER BY m.vote_average desc", Movie.class)
+                    .setMaxResults(10)
+                    .getResultList();
+        }
+    }
+
+    public List<Movie> getTop10LowestRated(){
+        try(EntityManager em = emf.createEntityManager()){
+            return em.createQuery("SELECT m FROM Movie m ORDER BY m.vote_average asc", Movie.class)
+                    .setMaxResults(10)
+                    .getResultList();
+        }
+    }
+
+    public List<Movie> getTop10MostPopular(){
+        try(EntityManager em = emf.createEntityManager()){
+            return em.createQuery("SELECT m FROM Movie m ORDER BY m.popularity desc", Movie.class)
+                    .setMaxResults(10)
+                    .getResultList();
+        }
+    }
+
+
+
 }
