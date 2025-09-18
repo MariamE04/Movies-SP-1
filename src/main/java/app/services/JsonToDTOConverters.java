@@ -28,13 +28,36 @@ public class JsonToDTOConverters {
             }
         }
 
-    public ActorDTO toActorDTO(String json){
+    public List<ActorDTO> toActorDTO(String json){
         try {
-            return objectMapper.readValue(json, ActorDTO.class); // Den siger: “Læs denne JSON-streng og map den ind i et objekt af typen WeatherWrapper”.
+            JsonNode root = objectMapper.readTree(json);
+            List<ActorDTO> actorDTOS = new ArrayList<>();
+            JsonNode castArray = root.get("cast");
+            if (castArray != null){
+                for (JsonNode castMember : castArray){
+                    ActorDTO dto = new ActorDTO();
+
+                    dto.setActor_id(castMember.get("id").asInt());
+                    dto.setName(castMember.get("name").asText());
+                    dto.setKnown_for_department(castMember.get("known_for_department").asText());
+                    dto.setCast_id(castMember.get("cast_id").asInt());
+
+
+                    JsonNode character = castMember.get("character");
+                    if(character != null){
+                        List<String> characters = new ArrayList<>();
+                        characters.add(character.asText());
+                        dto.setCharacter(characters);
+                    }
+                    actorDTOS.add(dto);
+                }
+            }
+            return actorDTOS; // Den siger: “Læs denne JSON-streng og map den ind i et objekt af typen WeatherWrapper”.
         } catch (JsonProcessingException e) {
             throw new ApiException(500, e.getMessage());
         }
     }
+
 
     public List<DirectorDTO> toDirectorDTO(String json){
         try {
