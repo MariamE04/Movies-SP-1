@@ -34,6 +34,16 @@ public class GenreDAO implements IDAO<Genre, Integer> {
 
     }
 
+
+    public Genre getByIdM(Integer genreId) {
+        try(EntityManager em = emf.createEntityManager()){
+            return em.createQuery("SELECT g FROM Genre g WHERE g.genreId =: id",Genre.class)
+                    .setParameter("id", genreId)
+                    .getSingleResult();
+        }
+
+    }
+
     @Override
     public Genre update(Genre genre) {
         try(EntityManager em = emf.createEntityManager()){

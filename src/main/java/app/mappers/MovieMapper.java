@@ -24,8 +24,6 @@ public class MovieMapper {
 
         movie.setDirector(DirectorMapper.toEntity(dto.getDirectorDTO()));
 
-
-        //midlertidig løsning gem film i db uden genre
         Set<MovieGenre> movieGenres = new HashSet<>();
 
         if (dto.getGenreDTO() != null) {   // <-- tjek om genreDTO er null
