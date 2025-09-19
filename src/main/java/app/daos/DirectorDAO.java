@@ -95,16 +95,4 @@ public class DirectorDAO implements IDAO<Director, Integer> {
 
         }
     }
-
-    public Director getByDirectorDBId(int directorId) {
-        try (EntityManager em = emf.createEntityManager()) {
-            return em.createQuery("SELECT d FROM Director d WHERE d.directorId = :did", Director.class)
-                    .setParameter("did", directorId)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
-
 }
