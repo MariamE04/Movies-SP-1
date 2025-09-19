@@ -55,10 +55,11 @@ public class GenreDAO implements IDAO<Genre, Integer> {
     @Override
     public boolean delete(Integer genreId) {
         try(EntityManager em = emf.createEntityManager()){
-
+            em.getTransaction().begin();
            int rowsAffected = em.createQuery("DELETE FROM Genre g where g.genreId = ?1 ")
                     .setParameter(1, genreId)
                     .executeUpdate();
+           em.getTransaction().commit();
            //Hvis mere end 0 rækker er blevet ændret så return
            return rowsAffected > 0;
         }
