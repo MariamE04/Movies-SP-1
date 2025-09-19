@@ -23,7 +23,7 @@ public class Main {
 
         // 2️ Tilføj directors og gem dem i DB
 
-        movieService.processor(movies);
+        //movieService.processor(movies);
 
        movieService.MoviesWithActors(movies);
 /*
