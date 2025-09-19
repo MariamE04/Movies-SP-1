@@ -3,17 +3,11 @@ package app;
 import app.config.HibernateConfig;
 import app.dtos.MovieDTO;
 
-import app.entities.Director;
 import app.entities.Movie;
-import app.services.DirectorService;
-import app.services.GenreService;
 import app.services.MovieService;
 import app.daos.MovieDAO;
 import jakarta.persistence.EntityManagerFactory;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Main {
@@ -29,7 +23,7 @@ public class Main {
 
         // 2️ Tilføj directors og gem dem i DB
 
-        movieService.MoviesWithDirectors(movies);
+        movieService.processor(movies);
 
       //  movieService.MoviesWithActors(movies);
 
