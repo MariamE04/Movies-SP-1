@@ -25,8 +25,8 @@ public class Main {
 
         movieService.processor(movies);
 
-      //  movieService.MoviesWithActors(movies);
-
+       movieService.MoviesWithActors(movies);
+/*
         // Test af MovieDAO operationer
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
         MovieDAO movieDAO = new MovieDAO(emf);
@@ -47,6 +47,8 @@ public class Main {
         System.out.println("\nTop 10 meste populærer movies: " );
             movies1.forEach(m -> System.out.println(m));
 
+
+ */
 
 
     }
