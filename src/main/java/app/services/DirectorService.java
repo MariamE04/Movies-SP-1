@@ -28,10 +28,6 @@ public class DirectorService {
     }
 
 
-
-
-
-
     public Optional<DirectorDTO> getDirectorByName(String name){
         return directorDAO.findByName(name).map(DirectorMapper::toDTO);
 
@@ -47,7 +43,7 @@ public class DirectorService {
 
     //virker ikke i nu (ventes med)
     public Director getById(int id){
-        Director found = directorDAO.getByDirectorDBId(id);
+        Director found = directorDAO.getById(id);
         return  found;
     }
 
