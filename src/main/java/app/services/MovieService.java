@@ -68,7 +68,6 @@ public class MovieService {
         DirectorDAO directorDAO = new DirectorDAO(emf); //  Håndtere directors i databasen (gem/pesister)
         MovieDAO movieDAO = new MovieDAO(emf); //Håndtere movies i databasen (gem/pesister)
         GenreDAO genreDAO = new GenreDAO(emf);
-        MovieGenreDAO movieGenreDAO = new MovieGenreDAO(emf);
 
         // Opret tråd-pool med 10 tråde → parallelt arbejde
         ExecutorService executor = Executors.newFixedThreadPool(10);
@@ -103,26 +102,27 @@ public class MovieService {
                     // Persisterer filmen med director til databasen. (gem)
                     movieDAO.creat(movieEntity);
 
-                    // --- Gem MovieGenre ---
+                    // --- Gem genre ---
                     for (GenreDTO genreDTO : genres) {
-                        Genre genreEntity;
                         try {
-                            genreEntity = genreDAO.getById(genreDTO.getId());
+                            Genre genreEntity = genreDAO.getById(genreDTO.getId()); // prøv at finde
+                            // Tilføj forbindelse
+                            MovieGenre mg = new MovieGenre();
+                            mg.setMovie(movieEntity);
+                            mg.setGenre(genreEntity);
+                            movieEntity.getMovieGenres().add(mg);
                         } catch (Exception e) {
-                            genreEntity = GenreMapper.toEntity(genreDTO);
+                            // hvis ikke findes, gem ny
+                            Genre genreEntity = GenreMapper.toEntity(genreDTO);
                             genreDAO.creat(genreEntity);
+
+                            MovieGenre mg = new MovieGenre();
+                            mg.setMovie(movieEntity);
+                            mg.setGenre(genreEntity);
+                            movieEntity.getMovieGenres().add(mg);
                         }
-
-                        MovieGenre mg = new MovieGenre();
-                        mg.setMovie(movieEntity);
-                        mg.setGenre(genreEntity);
-
-                        // Persister MovieGenre direkte
-                        movieGenreDAO.create(mg);
-
-                        // Tilføj til memory-relation
-                        movieEntity.getMovieGenres().add(mg);
                     }
+
                 }
             }); // Slut på executor-opgaven for én film.
         }

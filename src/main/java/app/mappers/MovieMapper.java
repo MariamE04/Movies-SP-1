@@ -24,6 +24,20 @@ public class MovieMapper {
         movie.setVote_count(dto.getVote_count());
         movie.setDirector(DirectorMapper.toEntity(dto.getDirectorDTO()));
 
+        Set<MovieGenre> movieGenres = new HashSet<>();
+
+        if (dto.getGenreDTO() != null) {   // <-- tjek om genreDTO er null
+            for (GenreDTO genreDTO : dto.getGenreDTO()) {
+                Genre genre = GenreMapper.toEntity(genreDTO);
+                MovieGenre mg = new MovieGenre();
+                mg.setMovie(movie);
+                mg.setGenre(genre);
+                movieGenres.add(mg);
+            }
+        }
+
+        movie.setMovieGenres(movieGenres);
+
 
         //TODO: Har ikke testet det men MovieCast  forbinder actor og movie sammen her
         Set<MovieCast> movieCasts = new HashSet<>();
