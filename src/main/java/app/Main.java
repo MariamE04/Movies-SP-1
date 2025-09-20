@@ -22,9 +22,9 @@ public class Main {
 
 
         // 2️ Tilføj directors og gem dem i DB
-        movieService.processor(movies);
+        movieService.MoviesWithDirectors(movies);
 
-       //movieService.MoviesWithActors(movies);
+       movieService.MoviesWithActors(movies);
 /*
         // Test af MovieDAO operationer
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
