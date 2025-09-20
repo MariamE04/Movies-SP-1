@@ -10,6 +10,11 @@ Formålet er at:
 - Persistere data i en database med JPA/Hibernate.
 - Køre automatiserede tests med Testcontainers (Docker).
 
+### Gruppe medlemmer
+- Asger
+- Daniel
+- Mariam
+
 ---
 
 ## Setup
@@ -36,7 +41,7 @@ Formålet er at:
 For at køre tests (kræves Docker, da der bruges Testcontainers):
 ```java
 mvn test
-``` 
+```
 
 ### API nøgle
 Projektet kræver en API-nøgle til TMDb.
