@@ -62,6 +62,7 @@ public class MovieService {
     }
 
     public void MoviesWithDirectors(List<MovieDTO> movies) throws InterruptedException {
+        // Opretter services og DAOs til at hente og gemme data
         DirectorService directorService = new DirectorService();
         GenreService genreService = new GenreService();
         DirectorDAO directorDAO = new DirectorDAO(emf);
@@ -69,50 +70,60 @@ public class MovieService {
         GenreDAO genreDAO = new GenreDAO(emf);
         MovieGenreDAO movieGenreDAO = new MovieGenreDAO(emf);
 
+        // Thread pool med 10 tråde til parallel behandling af film
         ExecutorService executor = Executors.newFixedThreadPool(10);
 
+        // Loop gennem alle film i listen
         for (MovieDTO movieDTO : movies) {
-            executor.submit(() -> {
-                // Hent director og genre fra API
-                List<DirectorDTO> directors = directorService.getDirectorsByMovieId(movieDTO.getId());
-                if (directors.isEmpty()) return;
+            executor.submit(() -> {   // Kør hver film i en separat tråd
 
+                // Hent instruktører fra API ud fra filmens ID
+                List<DirectorDTO> directors = directorService.getDirectorsByMovieId(movieDTO.getId());
+                if (directors.isEmpty()) return; // Hvis ingen instruktør → spring filmen over
+
+                // Tag den første instruktør (hvis der er flere)
                 DirectorDTO directorDTO = directors.get(0);
+
+                // Gem instruktøren i filmens DTO
                 movieDTO.setDirectorDTO(directorDTO);
+
+                // Hent genre fra API ud fra filmens ID
                 List<GenreDTO> genres = genreService.getGenreInfo(movieDTO.getId());
+
+                // Gem genre i filmens DTO
                 movieDTO.setGenreDTO(genres);
 
-                // Brug én EntityManager / transaction per film
-                try (var em = emf.createEntityManager()) {
+                // // Opret en ny EntityManager (til databasen)
+                try (var em = emf.createEntityManager()) { // Hent en transaction fra EntityManager
                     var tx = em.getTransaction();
-                    tx.begin();
+                    tx.begin();  // Start databasen-transaction
 
                     // --- Director ---
-                    Director directorEntity = em.find(Director.class, directorDTO.getId());
-                    if (directorEntity == null) {
-                        directorEntity = DirectorMapper.toEntity(directorDTO);
-                        em.persist(directorEntity);
+                    Director directorEntity = em.find(Director.class, directorDTO.getId());  // Find instruktøren i databasen vha. ID
+                    if (directorEntity == null) { // Hvis instruktøren ikke findes
+                        directorEntity = DirectorMapper.toEntity(directorDTO);   // Lav en entity ud fra DTO
+                        em.persist(directorEntity); // Gem instruktøren i databasen
                     }
 
                     // --- Movie ---
-                    Movie movieEntity = MovieMapper.toEntity(movieDTO);
-                    movieEntity.setDirector(directorEntity);
-                    em.persist(movieEntity);
+                    Movie movieEntity = MovieMapper.toEntity(movieDTO);   // Lav en entity ud fra filmens DTO
+                    movieEntity.setDirector(directorEntity);  // Knyt instruktøren til filmen
+                    em.persist(movieEntity);  // Gem filmen i databasen
 
                     // --- Genre og MovieGenre ---
-                    for (GenreDTO genreDTO : genres) {
-                        Genre genreEntity = em.find(Genre.class, genreDTO.getId());
-                        if (genreEntity == null) {
-                            genreEntity = GenreMapper.toEntity(genreDTO);
-                            em.persist(genreEntity);
+                    for (GenreDTO genreDTO : genres) {  // Loop gennem alle genre for filmen
+                        Genre genreEntity = em.find(Genre.class, genreDTO.getId());  // Find genre i databasen vha. ID
+                        if (genreEntity == null) {  // Hvis genren ikke findes
+                            genreEntity = GenreMapper.toEntity(genreDTO);  // Lav en entity ud fra DTO
+                            em.persist(genreEntity); // Gem genren i databasen
                         }
 
-                        MovieGenre mg = new MovieGenre();
-                        mg.setMovie(movieEntity);
-                        mg.setGenre(genreEntity);
-                        em.persist(mg); // Persist i samme transaction
+                        MovieGenre mg = new MovieGenre(); // Opret en ny film-genre relation
+                        mg.setMovie(movieEntity);   // Sæt film på relationen
+                        mg.setGenre(genreEntity);  // Gem relationen i databasen
+                        em.persist(mg);   // Tilføj relationen til filmens liste (i hukommelsen)
 
-                        movieEntity.getMovieGenres().add(mg); // memory-relation
+                        movieEntity.getMovieGenres().add(mg);  // Gem alle ændringer i databasen
                     }
 
                     tx.commit();

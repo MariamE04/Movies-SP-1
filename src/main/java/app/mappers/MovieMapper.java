@@ -38,7 +38,6 @@ public class MovieMapper {
 
         movie.setMovieGenres(movieGenres);
 
-
         //TODO: Har ikke testet det men MovieCast  forbinder actor og movie sammen her
         Set<MovieCast> movieCasts = new HashSet<>();
 
